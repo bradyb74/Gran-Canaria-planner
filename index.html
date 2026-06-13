@@ -172,6 +172,7 @@
       <button class="tab-btn" onclick="switchTab('car')">Car Rental</button>
       <button class="tab-btn" onclick="switchTab('map')">Map</button>
       <button class="tab-btn" onclick="switchTab('translator')">Translator</button>
+      <button class="tab-btn" onclick="switchTab('personalise')">Personalise</button>
       <button class="tab-btn" onclick="switchTab('quizzes')">Quizzes</button>
       <button class="tab-btn" onclick="switchTab('photos')">Photos</button>
       <button class="tab-btn" onclick="switchTab('tips')">Tips</button>
@@ -199,6 +200,10 @@
 
     <div id="translator-tab" style="display: none;">
       <div id="translator-content"></div>
+    </div>
+
+    <div id="personalise-tab" style="display: none;">
+      <div id="personalise-content"></div>
     </div>
 
     <div id="quizzes-tab" style="display: none;">
@@ -298,6 +303,7 @@
       renderCarRental();
       renderMap();
       renderTranslator();
+      renderPersonalise();
       renderQuizzes();
       renderPhotos();
       renderTips();
@@ -432,8 +438,7 @@
               </div>
             </div>
             <div style="margin-bottom: 0.75rem;">
-              <a href="https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank" style="display: inline-block; font-size: 12px; color: #1a9b8e; text-decoration: none; margin-right: 1rem; font-weight: 500;">📍 Maps</a>
-              <a href="https://www.google.com/maps/place/${encodeURIComponent(activity.name)}/@0,0,3a,75y" target="_blank" style="display: inline-block; font-size: 12px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 Street View</a>
+              <a href="https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank" style="display: inline-block; font-size: 12px; color: #1a9b8e; text-decoration: none; font-weight: 500;">📍 View on Maps</a>
             </div>
             ${allInterested.length > 0 || allCompleted.length > 0 ? `
               <div class="participant-avatars">
@@ -448,6 +453,232 @@
           </div>
         `;
       }).join('');
+    }
+
+    function renderPersonalise() {
+      const container = document.getElementById('personalise-content');
+      const saved = JSON.parse(localStorage.getItem('gc-preferences') || '{}');
+      
+      const foodPreferences = {
+        vegetarian: 'Vegetarian 🥗',
+        vegan: 'Vegan 🌱',
+        pescatarian: 'Pescatarian 🐟',
+        glutenFree: 'Gluten-free 🚫🌾',
+        dairyFree: 'Dairy-free 🥛',
+        spicy: 'Loves spicy 🌶️'
+      };
+      
+      const cuisines = {
+        spanish: 'Spanish tapas & paella',
+        local: 'Local/traditional Canarian',
+        seafood: 'Seafood 🦞',
+        vegetarian: 'Vegetarian cuisine',
+        international: 'International',
+        casual: 'Casual/street food'
+      };
+      
+      const interests = {
+        hiking: 'Hiking & nature 🥾',
+        beaches: 'Beaches & water 🏖️',
+        culture: 'Culture & history 🏛️',
+        nightlife: 'Nightlife & bars 🍹',
+        shopping: 'Shopping 🛍️',
+        family: 'Family-friendly 👨‍👩‍👧‍👦',
+        photography: 'Photography spots 📸',
+        relaxation: 'Relaxation & spa 🧘'
+      };
+      
+      const restaurants = {
+        vegetarian: [
+          { name: 'El Huerto de Rey', cuisine: 'Vegetarian/organic', town: 'Mogán' },
+          { name: 'Verde Vida', cuisine: 'Vegan/plant-based', town: 'Las Palmas' }
+        ],
+        local: [
+          { name: 'Casa Ajenjo', cuisine: 'Traditional Canarian', town: 'Mogán', special: 'Local fish' },
+          { name: 'El Pescado Frito', cuisine: 'Fresh fish', town: 'Mogán' },
+          { name: 'Casa Montaña', cuisine: 'Canarian classics', town: 'Vegueta' }
+        ],
+        seafood: [
+          { name: 'El Pescado Frito', cuisine: 'Fresh grilled fish', town: 'Mogán' },
+          { name: 'Vega Mar', cuisine: 'Seafood paella', town: 'Meloneras' }
+        ],
+        casual: [
+          { name: 'Local tapas bars', cuisine: 'Pintxos & tapas', town: 'Throughout' },
+          { name: 'Street food markets', cuisine: 'Local specialties', town: 'Puerto de Mogán' }
+        ]
+      };
+      
+      const recipes = {
+        vegetarian: [
+          'Pumpkin & chickpea curry with rice',
+          'Mediterranean vegetable stew',
+          'Lentil soup with spinach'
+        ],
+        local: [
+          'Ropa Vieja (shredded beef)',
+          'Camarones al ajillo (garlic prawns)',
+          'Papas arrugadas con mojo (wrinkly potatoes with sauce)'
+        ],
+        seafood: [
+          'Grilled fish with garlic & lemon',
+          'Seafood paella',
+          'Gambas al ajillo (garlic shrimp)'
+        ],
+        casual: [
+          'Spanish tortilla (potato omelette)',
+          'Pan con tomate (tomato bread)',
+          'Croquetas caseras'
+        ]
+      };
+      
+      const savedPrefs = {
+        food: saved.food || [],
+        cuisines: saved.cuisines || [],
+        interests: saved.interests || []
+      };
+      
+      let html = `<div style="max-width: 600px;">
+        <h2 style="color: #1a9b8e; margin-bottom: 1.5rem;">🎯 Personalise Your Trip</h2>
+        
+        <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+          <h3 style="margin-top: 0; color: #333;">🍽️ Food Preferences</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">`;
+      
+      Object.entries(foodPreferences).forEach(([key, label]) => {
+        html += `<label style="display: flex; align-items: center; cursor: pointer;">
+          <input type="checkbox" value="${key}" onchange="updatePreferences('food', this)" ${savedPrefs.food.includes(key) ? 'checked' : ''} style="margin-right: 0.5rem;">
+          <span style="font-size: 14px;">${label}</span>
+        </label>`;
+      });
+      
+      html += `</div></div>
+        
+        <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+          <h3 style="margin-top: 0; color: #333;">🍴 Cuisine Preferences</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">`;
+      
+      Object.entries(cuisines).forEach(([key, label]) => {
+        html += `<label style="display: flex; align-items: center; cursor: pointer;">
+          <input type="checkbox" value="${key}" onchange="updatePreferences('cuisines', this)" ${savedPrefs.cuisines.includes(key) ? 'checked' : ''} style="margin-right: 0.5rem;">
+          <span style="font-size: 14px;">${label}</span>
+        </label>`;
+      });
+      
+      html += `</div></div>
+        
+        <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+          <h3 style="margin-top: 0; color: #333;">🎯 Interests</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">`;
+      
+      Object.entries(interests).forEach(([key, label]) => {
+        html += `<label style="display: flex; align-items: center; cursor: pointer;">
+          <input type="checkbox" value="${key}" onchange="updatePreferences('interests', this)" ${savedPrefs.interests.includes(key) ? 'checked' : ''} style="margin-right: 0.5rem;">
+          <span style="font-size: 14px;">${label}</span>
+        </label>`;
+      });
+      
+      html += `</div></div>`;
+      
+      if (savedPrefs.food.length > 0 || savedPrefs.cuisines.length > 0) {
+        html += `<div style="background: #e8f4f8; border: 2px solid #1a9b8e; border-radius: 8px; padding: 1.5rem; margin-top: 2rem;">
+          <h3 style="margin-top: 0; color: #1a9b8e;">💡 Personalised Recommendations</h3>`;
+        
+        if (savedPrefs.food.length > 0 || savedPrefs.cuisines.length > 0) {
+          html += `<div style="margin-bottom: 1.5rem;">
+            <strong style="color: #333;">🍽️ Restaurants to Try:</strong>
+            <ul style="margin: 0.75rem 0 0 0; padding-left: 1.5rem;">`;
+          
+          getRestaurantRecommendations(savedPrefs, restaurants).forEach(r => {
+            html += '<li style="margin-bottom: 0.5rem;"><strong>' + r.name + '</strong> - ' + r.cuisine + ' in ' + r.town;
+            if (r.special) html += ' ⭐ ' + r.special;
+            html += '</li>';
+          });
+          
+          html += `</ul></div>`;
+        }
+        
+        if (savedPrefs.food.length > 0 || savedPrefs.cuisines.length > 0) {
+          html += `<div>
+            <strong style="color: #333;">👨‍🍳 Recipe Ideas to Make:</strong>
+            <ul style="margin: 0.75rem 0 0 0; padding-left: 1.5rem;">`;
+          
+          getRecipeRecommendations(savedPrefs, recipes).forEach(r => {
+            html += '<li style="margin-bottom: 0.5rem;">' + r + '</li>';
+          });
+          
+          html += `</ul></div>`;
+        }
+        
+        html += `</div>`;
+      } else {
+        html += `<div style="background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 1rem; text-align: center;">
+          <p style="margin: 0; color: #333;">👇 Select your preferences above to get personalised recommendations!</p>
+        </div>`;
+      }
+      
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    function updatePreferences(category, checkbox) {
+      const saved = JSON.parse(localStorage.getItem('gc-preferences') || '{}');
+      if (!saved[category]) saved[category] = [];
+      
+      if (checkbox.checked) {
+        if (!saved[category].includes(checkbox.value)) {
+          saved[category].push(checkbox.value);
+        }
+      } else {
+        saved[category] = saved[category].filter(v => v !== checkbox.value);
+      }
+      
+      localStorage.setItem('gc-preferences', JSON.stringify(saved));
+      renderPersonalise();
+    }
+
+    function getRestaurantRecommendations(prefs, restaurants) {
+      let recommendations = [];
+      
+      if (prefs.food.includes('vegetarian')) {
+        recommendations.push(...(restaurants.vegetarian || []));
+      }
+      if (prefs.cuisines.includes('local')) {
+        recommendations.push(...(restaurants.local || []));
+      }
+      if (prefs.cuisines.includes('seafood') || prefs.food.includes('pescatarian')) {
+        recommendations.push(...(restaurants.seafood || []));
+      }
+      if (prefs.cuisines.includes('casual')) {
+        recommendations.push(...(restaurants.casual || []));
+      }
+      
+      // Remove duplicates
+      const seen = new Set();
+      return recommendations.filter(r => {
+        if (seen.has(r.name)) return false;
+        seen.add(r.name);
+        return true;
+      });
+    }
+
+    function getRecipeRecommendations(prefs, recipes) {
+      let recommendations = [];
+      
+      if (prefs.food.includes('vegetarian')) {
+        recommendations.push(...(recipes.vegetarian || []));
+      }
+      if (prefs.cuisines.includes('local')) {
+        recommendations.push(...(recipes.local || []));
+      }
+      if (prefs.cuisines.includes('seafood')) {
+        recommendations.push(...(recipes.seafood || []));
+      }
+      if (prefs.cuisines.includes('casual')) {
+        recommendations.push(...(recipes.casual || []));
+      }
+      
+      // Remove duplicates
+      return [...new Set(recommendations)];
     }
 
     function renderQuizzes() {
@@ -515,7 +746,6 @@
             <p>Avenida Lechugal, 61<br>Mogán, Canarias 35138<br>Spain</p>
           </div>
           <a href="${airbnbLink}" target="_blank" class="accommodation-btn">View on Airbnb</a>
-          <a href="https://www.google.com/maps/place/Avenida+Lechugal+61+Mogan+Canarias+35138/@27.8675,-15.6340,3a,75y" target="_blank" class="accommodation-btn" style="background: #ea4335; margin-left: 0.5rem;">Street View</a>
         </div>
         
         <div class="info-box">
