@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gran Canaria Family Adventure Tracker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; padding: 1rem; }
@@ -49,6 +51,25 @@
     .tip-card { background: #e1f5ee; border-left: 3px solid #1a9b8e; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; }
     .tip-card strong { color: #0F6E56; }
     .hidden { display: none !important; }
+    .photo-upload-card { background: linear-gradient(135deg, #1a9b8e 0%, #138d82 100%); border-radius: 8px; padding: 2rem; text-align: center; color: white; }
+    .photo-upload-card h3 { margin: 0 0 0.5rem 0; font-size: 20px; }
+    .photo-upload-card p { margin: 0 0 1.5rem 0; font-size: 14px; opacity: 0.9; }
+    .photo-upload-btn { display: inline-block; background: white; color: #1a9b8e; padding: 0.8rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; font-size: 15px; transition: transform 0.2s; }
+    .photo-upload-btn:hover { transform: scale(1.05); }
+    .photo-info { background: #f9f9f9; border: 1px solid #eee; border-radius: 6px; padding: 1rem; margin-top: 1.5rem; font-size: 13px; color: #666; }
+    #map { width: 100%; height: 500px; border-radius: 8px; margin-bottom: 1rem; }
+    .map-info { background: #f9f9f9; border: 1px solid #eee; border-radius: 6px; padding: 1rem; font-size: 13px; color: #666; }
+    .translator-section { display: flex; gap: 1rem; margin-bottom: 1rem; }
+    .translator-half { flex: 1; }
+    .translator-half label { font-size: 13px; color: #666; display: block; margin-bottom: 0.5rem; font-weight: 500; }
+    .translator-half textarea { width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px; min-height: 150px; resize: vertical; }
+    .translator-btn { width: 100%; padding: 0.8rem; background: #1a9b8e; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; margin-top: 0.5rem; }
+    .translator-btn:hover { background: #138d82; }
+    .phrase-card { background: white; border: 1px solid #eee; border-radius: 6px; padding: 1rem; margin-bottom: 0.75rem; }
+    .phrase-card strong { color: #1a9b8e; display: block; margin-bottom: 0.25rem; }
+    .phrase-card .english { font-size: 13px; color: #666; }
+    .phrase-card .spanish { font-size: 13px; color: #333; font-style: italic; }
+    .phrase-card .spanish::before { content: "→ "; color: #d4a574; }
   </style>
 </head>
 <body>
@@ -84,16 +105,31 @@
 
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('activities')">Activities</button>
+      <button class="tab-btn" onclick="switchTab('map')">Map</button>
+      <button class="tab-btn" onclick="switchTab('translator')">Translator</button>
       <button class="tab-btn" onclick="switchTab('quizzes')">Quizzes</button>
-      <button class="tab-btn" onclick="switchTab('tips')">Travel Tips</button>
+      <button class="tab-btn" onclick="switchTab('photos')">Photos</button>
+      <button class="tab-btn" onclick="switchTab('tips')">Tips</button>
     </div>
 
     <div id="activities-tab">
       <div id="activities-list"></div>
     </div>
 
+    <div id="map-tab" style="display: none;">
+      <div id="map-container"></div>
+    </div>
+
+    <div id="translator-tab" style="display: none;">
+      <div id="translator-content"></div>
+    </div>
+
     <div id="quizzes-tab" style="display: none;">
       <div id="quizzes-list"></div>
+    </div>
+
+    <div id="photos-tab" style="display: none;">
+      <div id="photos-content"></div>
     </div>
 
     <div id="tips-tab" style="display: none;">
@@ -135,6 +171,35 @@
       { title: 'What to pack', info: 'Sunscreen (essential!), light layers, water shoes, a light jacket for evenings.' }
     ];
 
+    const commonPhrases = [
+      { category: 'Greetings', english: 'Hello', spanish: 'Hola' },
+      { category: 'Greetings', english: 'Good morning', spanish: 'Buenos días' },
+      { category: 'Greetings', english: 'Thank you', spanish: 'Gracias' },
+      { category: 'Greetings', english: 'Please', spanish: 'Por favor' },
+      { category: 'Dining', english: 'A table for two, please', spanish: 'Una mesa para dos, por favor' },
+      { category: 'Dining', english: 'The bill, please', spanish: 'La cuenta, por favor' },
+      { category: 'Dining', english: 'Delicious!', spanish: '¡Delicioso!' },
+      { category: 'Dining', english: 'I am vegetarian', spanish: 'Soy vegetariano/a' },
+      { category: 'Directions', english: 'Where is...?', spanish: '¿Dónde está...?' },
+      { category: 'Directions', english: 'How do I get to...?', spanish: '¿Cómo llego a...?' },
+      { category: 'Directions', english: 'I am lost', spanish: 'Estoy perdido/a' },
+      { category: 'Shopping', english: 'How much is this?', spanish: '¿Cuánto cuesta esto?' },
+      { category: 'Shopping', english: 'Do you have...?', spanish: '¿Tienes...?' },
+      { category: 'Shopping', english: 'Too expensive', spanish: 'Muy caro' },
+      { category: 'Emergency', english: 'Help!', spanish: '¡Ayuda!' },
+      { category: 'Emergency', english: 'Doctor', spanish: 'Doctor/Médico' },
+      { category: 'Emergency', english: 'Police', spanish: 'Policía' }
+    ];
+
+    const localBusinesses = [
+      { name: 'Restaurante Casa Ajenjo', type: 'Restaurant', coords: [27.8680, -15.6338], info: 'Traditional Canarian cuisine in Mogán' },
+      { name: 'Peluquería Mogán', type: 'Shop', coords: [27.8682, -15.6340], info: 'Local hair salon' },
+      { name: 'Mercado del Puerto', type: 'Market', coords: [27.8675, -15.6330], info: 'Fresh produce and local goods' },
+      { name: 'Café del Puerto', type: 'Cafe', coords: [27.8672, -15.6335], info: 'Waterfront coffee and snacks' },
+      { name: 'El Pescado Frito', type: 'Restaurant', coords: [27.8685, -15.6345], info: 'Fresh seafood restaurant' },
+      { name: 'Tienda de Artesanía', type: 'Shop', coords: [27.8678, -15.6342], info: 'Local crafts and souvenirs' }
+    ];
+
     function initApp() {
       const userName = localStorage.getItem(USER_KEY) || '';
       document.getElementById('userName').value = userName;
@@ -151,7 +216,10 @@
       
       loadActivities();
       renderActivities();
+      renderMap();
+      renderTranslator();
       renderQuizzes();
+      renderPhotos();
       renderTips();
     }
 
@@ -323,6 +391,181 @@
       `).join('');
     }
 
+    function renderPhotos() {
+      const container = document.getElementById('photos-content');
+      const oneDriveLink = 'https://1drv.ms/f/c/b4cfbc3916cff657/IgCWXPghQkPrRaV5DCmqnASmAYLkJ6qNaDjQ4zkURP9Qg-8?e=D1D8mC';
+      
+      container.innerHTML = `
+        <div class="photo-upload-card">
+          <h3>📸 Share Your Memories</h3>
+          <p>Upload photos from our Gran Canaria adventure to our shared folder</p>
+          <a href="${oneDriveLink}" target="_blank" class="photo-upload-btn">Upload Photos to OneDrive</a>
+        </div>
+        <div class="photo-info">
+          <strong>How it works:</strong> Click the button above to open our shared OneDrive folder. You can drag and drop photos, or click "Upload" to add files from your device. Everyone in the family can see and add photos here!
+        </div>
+      `;
+    }
+
+    function renderMap() {
+      const container = document.getElementById('map-container');
+      container.innerHTML = `
+        <div id="map"></div>
+        <div class="map-info">
+          <strong>🗺️ Explore the Area</strong>
+          <p>Click markers to see more information and links. Your activities appear here as you add them!</p>
+        </div>
+      `;
+      setTimeout(initMap, 100);
+    }
+
+    function initMap() {
+      const moganCoords = [27.8677, -15.6335];
+      const map = L.map('map').setView(moganCoords, 11);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Add activities as markers
+      const allActivities = loadActivities();
+      const activityCoords = {
+        1: [27.8677, -15.6335], // Mogán
+        2: [27.7647, -15.5913], // Meloneras
+        3: [28.1067, -15.5853], // Vegueta
+        4: [27.9633, -15.6025], // Roque Nublo
+        5: [27.8677, -15.6335], // Stargazing (Mogán)
+        7: [27.7369, -15.5895]  // Maspalomas Lighthouse
+      };
+
+      allActivities.forEach(activity => {
+        if (activityCoords[activity.id]) {
+          const coords = activityCoords[activity.id];
+          L.circleMarker(coords, {
+            radius: 8,
+            fillColor: '#d4a574',
+            color: '#854f0b',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.8
+          }).addTo(map).bindPopup(`<strong>${activity.name}</strong><br>${activity.description}<br><a href="https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank">View on Maps →</a>`);
+        }
+      });
+
+      // Add local businesses
+      localBusinesses.forEach(business => {
+        const color = business.type === 'Restaurant' ? '#1a9b8e' : '#138d82';
+        L.circleMarker(business.coords, {
+          radius: 6,
+          fillColor: color,
+          color: '#0F6E56',
+          weight: 1.5,
+          opacity: 1,
+          fillOpacity: 0.7
+        }).addTo(map).bindPopup(`<strong>${business.name}</strong><br><em>${business.type}</em><br>${business.info}<br><a href="https://www.google.com/maps/search/${encodeURIComponent(business.name + ' Mogán Gran Canaria')}" target="_blank">View on Maps →</a>`);
+      });
+    }
+
+    function renderTranslator() {
+      const container = document.getElementById('translator-content');
+      
+      const phrasesByCategory = {};
+      commonPhrases.forEach(phrase => {
+        if (!phrasesByCategory[phrase.category]) {
+          phrasesByCategory[phrase.category] = [];
+        }
+        phrasesByCategory[phrase.category].push(phrase);
+      });
+
+      let html = `
+        <div class="translator-section">
+          <div class="translator-half">
+            <label>English → Spanish</label>
+            <textarea id="translateEnToEs" placeholder="Type English text here..."></textarea>
+            <button class="translator-btn" onclick="translateEnToEs()">Translate</button>
+          </div>
+          <div class="translator-half">
+            <label>Spanish → English</label>
+            <textarea id="translateEsToEn" placeholder="Type Spanish text here..."></textarea>
+            <button class="translator-btn" onclick="translateEsToEn()">Translate</button>
+          </div>
+        </div>
+
+        <div><strong>Common Travel Phrases</strong></div>
+      `;
+
+      Object.keys(phrasesByCategory).forEach(category => {
+        html += `<div style="margin-top: 1rem;"><strong style="color: #1a9b8e;">${category}</strong></div>`;
+        phrasesByCategory[category].forEach(phrase => {
+          html += `
+            <div class="phrase-card">
+              <span class="english">${phrase.english}</span>
+              <span class="spanish">${phrase.spanish}</span>
+            </div>
+          `;
+        });
+      });
+
+      container.innerHTML = html;
+    }
+
+    function translateEnToEs() {
+      const text = document.getElementById('translateEnToEs').value;
+      if (!text.trim()) return;
+      
+      const translations = {
+        'hello': 'hola',
+        'good morning': 'buenos días',
+        'thank you': 'gracias',
+        'please': 'por favor',
+        'yes': 'sí',
+        'no': 'no',
+        'water': 'agua',
+        'beer': 'cerveza',
+        'wine': 'vino',
+        'food': 'comida',
+        'bathroom': 'baño',
+        'help': 'ayuda',
+        'excuse me': 'disculpe'
+      };
+
+      let result = text.toLowerCase();
+      Object.keys(translations).forEach(key => {
+        result = result.replace(new RegExp(key, 'gi'), translations[key]);
+      });
+
+      alert(`Translation (basic): ${result}\n\nNote: This is a simple word-by-word translation. For complex phrases, please use Google Translate or ask a local!`);
+    }
+
+    function translateEsToEn() {
+      const text = document.getElementById('translateEsToEn').value;
+      if (!text.trim()) return;
+      
+      const translations = {
+        'hola': 'hello',
+        'buenos días': 'good morning',
+        'gracias': 'thank you',
+        'por favor': 'please',
+        'sí': 'yes',
+        'no': 'no',
+        'agua': 'water',
+        'cerveza': 'beer',
+        'vino': 'wine',
+        'comida': 'food',
+        'baño': 'bathroom',
+        'ayuda': 'help',
+        'disculpe': 'excuse me'
+      };
+
+      let result = text.toLowerCase();
+      Object.keys(translations).forEach(key => {
+        result = result.replace(new RegExp(key, 'gi'), translations[key]);
+      });
+
+      alert(`Translation (basic): ${result}\n\nNote: This is a simple word-by-word translation. For complex phrases, please use Google Translate or ask a local!`);
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('[id$="-tab"]').forEach(el => el.style.display = 'none');
       document.getElementById(tabName + '-tab').style.display = 'block';
@@ -334,4 +577,3 @@
   </script>
 </body>
 </html>
-
