@@ -453,13 +453,29 @@
     }
 
     function initMap() {
-      const moganCoords = [27.8677, -15.6335];
-      const map = L.map('map').setView(moganCoords, 11);
+      const accommodationCoords = [27.8675, -15.6340]; // Avenida Lechugal, Mogán
+      const mapContainer = document.getElementById('map');
+      
+      if (mapContainer.childNodes.length > 0) {
+        mapContainer.innerHTML = '';
+      }
+      
+      const map = L.map('map', { preferCanvas: true }).setView(accommodationCoords, 12);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 19
       }).addTo(map);
+
+      // Add accommodation marker (home)
+      L.marker(accommodationCoords, {
+        icon: L.icon({
+          iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTAgMjBWMTRoNHY2aDVWMTBoM0wxMiAzIDIgMTBoM3Y0aDV6IiBmaWxsPSIjZDRhNTc0Ii8+PC9zdmc+',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -32]
+        })
+      }).addTo(map).bindPopup('<strong>🏠 Your Accommodation</strong><br>Avenida Lechugal, 61<br>Mogán, Canarias 35138');
 
       // Add activities as markers
       const allActivities = loadActivities();
@@ -498,6 +514,8 @@
           fillOpacity: 0.7
         }).addTo(map).bindPopup(`<strong>${business.name}</strong><br><em>${business.type}</em><br>${business.info}<br><a href="https://www.google.com/maps/search/${encodeURIComponent(business.name + ' Mogán Gran Canaria')}" target="_blank">View on Maps →</a>`);
       });
+
+      map.invalidateSize();
     }
 
     function renderTranslator() {
