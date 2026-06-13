@@ -70,6 +70,39 @@
     .phrase-card .english { font-size: 13px; color: #666; }
     .phrase-card .spanish { font-size: 13px; color: #333; font-style: italic; }
     .phrase-card .spanish::before { content: "→ "; color: #d4a574; }
+    
+    @media (max-width: 768px) {
+      body { padding: 0.5rem; }
+      .gc-header { padding: 1rem; margin-bottom: 1rem; }
+      .gc-header h1 { font-size: 22px; }
+      .gc-header p { font-size: 13px; }
+      .container { padding: 1rem; max-width: 100%; }
+      .tab-bar { overflow-x: auto; flex-wrap: wrap; gap: 4px; }
+      .tab-btn { padding: 0.6rem 0.8rem; font-size: 12px; white-space: nowrap; }
+      #map { height: 350px; }
+      .translator-section { flex-direction: column; gap: 0.5rem; }
+      .translator-half textarea { min-height: 100px; }
+      .user-section { flex-direction: column; }
+      .activity-actions { flex-wrap: wrap; }
+      .photo-upload-card { padding: 1.5rem; }
+      .photo-upload-card h3 { font-size: 18px; }
+      .participant-avatars { gap: 4px; }
+      .avatar { width: 28px; height: 28px; font-size: 10px; }
+      .form-group textarea { min-height: 50px; }
+    }
+    
+    @media (max-width: 480px) {
+      .gc-header { padding: 0.75rem; margin-bottom: 0.75rem; }
+      .gc-header h1 { font-size: 20px; margin-bottom: 0.25rem; }
+      .container { padding: 0.75rem; }
+      .tab-btn { padding: 0.5rem 0.6rem; font-size: 11px; }
+      .activity-title { font-size: 15px; }
+      .activity-desc { font-size: 13px; }
+      #map { height: 300px; }
+      .photo-upload-btn { padding: 0.6rem 1.5rem; font-size: 13px; }
+      .quiz-card { padding: 1rem; }
+      .tip-card { padding: 0.75rem; }
+    }
   </style>
 </head>
 <body>
