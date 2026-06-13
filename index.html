@@ -454,6 +454,18 @@
       `;
     }
 
+    function renderMap() {
+      const container = document.getElementById('map-container');
+      container.innerHTML = `
+        <div id="map"></div>
+        <div class="map-info">
+          <strong>🗺️ Explore the Area</strong>
+          <p>Click markers to see more information and links. Your activities appear here as you add them!</p>
+        </div>
+      `;
+      setTimeout(initMap, 100);
+    }
+
     function renderAccommodation() {
       const container = document.getElementById('accommodation-content');
       const airbnbLink = 'https://www.airbnb.co.uk/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMN3NBEDSM';
@@ -489,16 +501,6 @@
           </p>
         </div>
       `;
-    }
-      const container = document.getElementById('map-container');
-      container.innerHTML = `
-        <div id="map"></div>
-        <div class="map-info">
-          <strong>🗺️ Explore the Area</strong>
-          <p>Click markers to see more information and links. Your activities appear here as you add them!</p>
-        </div>
-      `;
-      setTimeout(initMap, 100);
     }
 
     function initMap() {
