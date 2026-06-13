@@ -431,6 +431,10 @@
                 <label for="done-${activity.id}">Done!</label>
               </div>
             </div>
+            <div style="margin-top: 0.75rem;">
+              <a href="https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank" style="display: inline-block; font-size: 12px; color: #1a9b8e; text-decoration: none; margin-right: 1rem; font-weight: 500;">📍 Maps</a>
+              <a href="https://www.google.com/maps/@0,0,3a,75y?query=${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank" style="display: inline-block; font-size: 12px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 Street View</a>
+            </div>
             ${allInterested.length > 0 || allCompleted.length > 0 ? `
               <div class="participant-avatars">
                 ${allInterested.map(name => `<div class="avatar interested" title="${name} wants to do this">${name.substring(0, 1).toUpperCase()}</div>`).join('')}
@@ -511,6 +515,7 @@
             <p>Avenida Lechugal, 61<br>Mogán, Canarias 35138<br>Spain</p>
           </div>
           <a href="${airbnbLink}" target="_blank" class="accommodation-btn">View on Airbnb</a>
+          <a href="https://www.google.com/maps/@27.8675,-15.6340,3a,75y" target="_blank" class="accommodation-btn" style="background: #ea4335; margin-left: 0.5rem;">Street View</a>
         </div>
         
         <div class="info-box">
@@ -613,6 +618,69 @@
             • Pack sunscreen - bring in checked luggage (over 100ml)<br>
             • Time difference: Gran Canaria is 1 hour ahead of UK
           </p>
+        </div>
+
+        <div class="flight-card">
+          <div class="flight-header" style="background: #d4a574;">👀 Points of Interest En Route</div>
+          <p style="font-size: 13px; color: #666; margin-bottom: 1rem;">
+            <strong>Outbound (LS225 - 28 Jun, 15:15-20:00)</strong><br>
+            Flying south/southwest from Leeds Bradford, you may see:
+          </p>
+          <div style="margin-bottom: 1rem;">
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>English Channel & Bay of Biscay</strong> - Beautiful coastal views, then open ocean</span>
+              <div style="gap: 0.5rem; display: flex;">
+                <a href="https://www.google.com/maps/@50.5,-2,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+              </div>
+            </div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>Spanish Coast</strong> - Iberian Peninsula with varied landscapes</span>
+              <div style="gap: 0.5rem; display: flex;">
+                <a href="https://www.google.com/maps/@40.5,-4,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+              </div>
+            </div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px;">
+              <strong>Atlantic Ocean</strong> - Vast blue expanse, sometimes cloud formations
+            </div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>Canary Islands Approach</strong> - Volcanic landscape and surrounding islands</span>
+              <div style="gap: 0.5rem; display: flex;">
+                <a href="https://www.google.com/maps/@27.9,−15.6,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+              </div>
+            </div>
+          </div>
+
+          <p style="font-size: 13px; color: #666; margin-bottom: 1rem; margin-top: 1.5rem;">
+            <strong>Return (LS226 - 5 Jul, 21:00-01:35 next day)</strong><br>
+            Nighttime flight, but you'll see:
+          </p>
+          <div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>Canary Islands Departure</strong> - City lights of Las Palmas at takeoff</span>
+              <div style="gap: 0.5rem; display: flex;">
+                <a href="https://www.google.com/maps/@28.11,-15.59,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+              </div>
+            </div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px;">
+              <strong>Atlantic Ocean at Night</strong> - Starfield above, darkness below (great for stargazing!)
+            </div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>Spanish Coast Lights</strong> - Coastal cities and towns twinkling</span>
+              <div style="gap: 0.5rem; display: flex;">
+                <a href="https://www.google.com/maps/@40,-3,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+              </div>
+            </div>
+            <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>UK Approach (Early Morning)</strong> - Dawn light breaking, approaching Britain</span>
+              <div style="gap: 0.5rem; display: flex;">
+                <a href="https://www.google.com/maps/@53.5,-2,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #e8f4f8; border: 1px solid #1a9b8e; border-radius: 6px; padding: 0.75rem; margin-top: 1rem; font-size: 12px;">
+            💡 <strong>Tip:</strong> Window seats have the best views! The outbound flight departs at 15:15, so you'll have good daylight most of the journey. Return flight is at night - perfect for stargazing over the Atlantic!
+          </div>
         </div>
       `;
     }
