@@ -478,14 +478,25 @@
       };
       
       const interests = {
-        hiking: 'Hiking & nature 🥾',
-        beaches: 'Beaches & water 🏖️',
-        culture: 'Culture & history 🏛️',
-        nightlife: 'Nightlife & bars 🍹',
-        shopping: 'Shopping 🛍️',
-        family: 'Family-friendly 👨‍👩‍👧‍👦',
-        photography: 'Photography spots 📸',
-        relaxation: 'Relaxation & spa 🧘'
+        hiking: { label: 'Hiking & nature 🥾', vibe: 'lively' },
+        beaches: { label: 'Beaches & water 🏖️', vibe: 'peaceful' },
+        culture: { label: 'Culture & history 🏛️', vibe: 'peaceful' },
+        nightlife: { label: 'Nightlife & bars 🍹', vibe: 'lively' },
+        shopping: { label: 'Shopping 🛍️', vibe: 'lively' },
+        family: { label: 'Family-friendly 👨‍👩‍👧‍👦', vibe: 'peaceful' },
+        photography: { label: 'Photography spots 📸', vibe: 'peaceful' },
+        relaxation: { label: 'Relaxation & spa 🧘', vibe: 'peaceful' }
+      };
+      
+      const activityRecommendations = {
+        hiking: 'Roque Nublo hike - Epic volcanic rock formation with panoramic views',
+        beaches: 'Beach day at Meloneras - Golden sand, clear turquoise water, perfect for swimming',
+        culture: 'Vegueta old town exploration - Historic colonial architecture & Columbus House',
+        nightlife: 'Local bars in Mogán - Tapas bars and waterfront venues with evening atmosphere',
+        shopping: 'Puerto de Mogán market - Local crafts, souvenirs, fresh produce',
+        family: 'Mogán village walk - Charming white-washed village with narrow streets, safe & friendly',
+        photography: 'Sunset at Lighthouse (Faro de Maspalomas) - Golden hour photography at its best',
+        relaxation: 'Stargazing at night - Gran Canaria dark sky spots perfect for peaceful evenings'
       };
       
       const restaurants = {
@@ -570,16 +581,16 @@
           <h3 style="margin-top: 0; color: #333;">🎯 Interests</h3>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">`;
       
-      Object.entries(interests).forEach(([key, label]) => {
+      Object.entries(interests).forEach(([key, item]) => {
         html += `<label style="display: flex; align-items: center; cursor: pointer;">
           <input type="checkbox" value="${key}" onchange="updatePreferences('interests', this)" ${savedPrefs.interests.includes(key) ? 'checked' : ''} style="margin-right: 0.5rem;">
-          <span style="font-size: 14px;">${label}</span>
+          <span style="font-size: 14px;">${item.label}</span>
         </label>`;
       });
       
       html += `</div></div>`;
       
-      if (savedPrefs.food.length > 0 || savedPrefs.cuisines.length > 0) {
+      if (savedPrefs.food.length > 0 || savedPrefs.cuisines.length > 0 || savedPrefs.interests.length > 0) {
         html += `<div style="background: #e8f4f8; border: 2px solid #1a9b8e; border-radius: 8px; padding: 1.5rem; margin-top: 2rem;">
           <h3 style="margin-top: 0; color: #1a9b8e;">💡 Personalised Recommendations</h3>`;
         
@@ -598,12 +609,35 @@
         }
         
         if (savedPrefs.food.length > 0 || savedPrefs.cuisines.length > 0) {
-          html += `<div>
+          html += `<div style="margin-bottom: 1.5rem;">
             <strong style="color: #333;">👨‍🍳 Recipe Ideas to Make:</strong>
             <ul style="margin: 0.75rem 0 0 0; padding-left: 1.5rem;">`;
           
           getRecipeRecommendations(savedPrefs, recipes).forEach(r => {
             html += '<li style="margin-bottom: 0.5rem;">' + r + '</li>';
+          });
+          
+          html += `</ul></div>`;
+        }
+        
+        if (savedPrefs.interests.length > 0) {
+          html += `<div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #1a9b8e;">
+            <strong style="color: #333;">🎯 Activities Based on Your Interests:</strong>
+            <div style="margin: 1rem 0 0 0;">
+              <label style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 0.75rem; background: white; border-radius: 6px; border: 1px solid #ddd;">
+                <span style="font-size: 13px; font-weight: 500;">Filter by vibe:</span>
+                <select id="vibeFilter" onchange="filterActivitiesByVibe()" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; cursor: pointer;">
+                  <option value="">All vibes</option>
+                  <option value="peaceful">🧘 Peaceful & Relaxing</option>
+                  <option value="lively">🎉 Lively & Active</option>
+                </select>
+              </label>
+            </div>
+            <ul id="activitiesList" style="margin: 0.75rem 0 0 0; padding-left: 1.5rem;">`;
+          
+          const activities = getActivityRecommendations(savedPrefs, interests, activityRecommendations, '');
+          activities.forEach(a => {
+            html += '<li style="margin-bottom: 0.75rem; padding: 0.5rem; background: rgba(26, 155, 142, 0.05); border-radius: 4px;"><strong>' + a.interest + '</strong>: ' + a.activity + '</li>';
           });
           
           html += `</ul></div>`;
@@ -679,6 +713,65 @@
       
       // Remove duplicates
       return [...new Set(recommendations)];
+    }
+
+    function getActivityRecommendations(prefs, interests, activityRecommendations, vibe) {
+      let recommendations = [];
+      
+      prefs.interests.forEach(key => {
+        const interest = interests[key];
+        if (!vibe || interest.vibe === vibe) {
+          recommendations.push({
+            interest: interest.label,
+            activity: activityRecommendations[key],
+            vibe: interest.vibe
+          });
+        }
+      });
+      
+      return recommendations;
+    }
+
+    function filterActivitiesByVibe() {
+      const saved = JSON.parse(localStorage.getItem('gc-preferences') || '{}');
+      const savedInterests = saved.interests || [];
+      const vibeFilter = document.getElementById('vibeFilter').value;
+      
+      // Get interests structure from the page - we need to pass it via a global or recreate it
+      const interests = {
+        hiking: { label: 'Hiking & nature 🥾', vibe: 'lively' },
+        beaches: { label: 'Beaches & water 🏖️', vibe: 'peaceful' },
+        culture: { label: 'Culture & history 🏛️', vibe: 'peaceful' },
+        nightlife: { label: 'Nightlife & bars 🍹', vibe: 'lively' },
+        shopping: { label: 'Shopping 🛍️', vibe: 'lively' },
+        family: { label: 'Family-friendly 👨‍👩‍👧‍👦', vibe: 'peaceful' },
+        photography: { label: 'Photography spots 📸', vibe: 'peaceful' },
+        relaxation: { label: 'Relaxation & spa 🧘', vibe: 'peaceful' }
+      };
+      
+      const activityRecommendations = {
+        hiking: 'Roque Nublo hike - Epic volcanic rock formation with panoramic views',
+        beaches: 'Beach day at Meloneras - Golden sand, clear turquoise water, perfect for swimming',
+        culture: 'Vegueta old town exploration - Historic colonial architecture & Columbus House',
+        nightlife: 'Local bars in Mogán - Tapas bars and waterfront venues with evening atmosphere',
+        shopping: 'Puerto de Mogán market - Local crafts, souvenirs, fresh produce',
+        family: 'Mogán village walk - Charming white-washed village with narrow streets, safe & friendly',
+        photography: 'Sunset at Lighthouse (Faro de Maspalomas) - Golden hour photography at its best',
+        relaxation: 'Stargazing at night - Gran Canaria dark sky spots perfect for peaceful evenings'
+      };
+      
+      const activities = getActivityRecommendations({ interests: savedInterests }, interests, activityRecommendations, vibeFilter);
+      
+      let html = '';
+      if (activities.length > 0) {
+        activities.forEach(a => {
+          html += '<li style="margin-bottom: 0.75rem; padding: 0.5rem; background: rgba(26, 155, 142, 0.05); border-radius: 4px;"><strong>' + a.interest + '</strong>: ' + a.activity + '</li>';
+        });
+      } else {
+        html = '<li style="color: #999; font-style: italic;">No activities match this vibe preference.</li>';
+      }
+      
+      document.getElementById('activitiesList').innerHTML = html;
     }
 
     function renderQuizzes() {
