@@ -565,10 +565,10 @@
 
       let result = text.toLowerCase();
       Object.keys(translations).forEach(key => {
-        result = result.replace(new RegExp(key, 'gi'), translations[key]);
+        result = result.replace(new RegExp('\\b' + key + '\\b', 'gi'), translations[key]);
       });
 
-      alert(`Translation (basic): ${result}\n\nNote: This is a simple word-by-word translation. For complex phrases, please use Google Translate or ask a local!`);
+      document.getElementById('translateEsToEn').value = result + '\n\n(Note: Basic word-by-word translation. For complex phrases, use Google Translate)';
     }
 
     function translateEsToEn() {
@@ -593,10 +593,10 @@
 
       let result = text.toLowerCase();
       Object.keys(translations).forEach(key => {
-        result = result.replace(new RegExp(key, 'gi'), translations[key]);
+        result = result.replace(new RegExp('\\b' + key + '\\b', 'gi'), translations[key]);
       });
 
-      alert(`Translation (basic): ${result}\n\nNote: This is a simple word-by-word translation. For complex phrases, please use Google Translate or ask a local!`);
+      document.getElementById('translateEnToEs').value = result + '\n\n(Note: Basic word-by-word translation. For complex phrases, use Google Translate)';
     }
 
     function switchTab(tabName) {
