@@ -431,9 +431,9 @@
                 <label for="done-${activity.id}">Done!</label>
               </div>
             </div>
-            <div style="margin-top: 0.75rem;">
+            <div style="margin-bottom: 0.75rem;">
               <a href="https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank" style="display: inline-block; font-size: 12px; color: #1a9b8e; text-decoration: none; margin-right: 1rem; font-weight: 500;">📍 Maps</a>
-              <a href="https://www.google.com/maps/@0,0,3a,75y?query=${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank" style="display: inline-block; font-size: 12px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 Street View</a>
+              <a href="https://www.google.com/maps/place/${encodeURIComponent(activity.name)}/@0,0,3a,75y" target="_blank" style="display: inline-block; font-size: 12px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 Street View</a>
             </div>
             ${allInterested.length > 0 || allCompleted.length > 0 ? `
               <div class="participant-avatars">
@@ -515,7 +515,7 @@
             <p>Avenida Lechugal, 61<br>Mogán, Canarias 35138<br>Spain</p>
           </div>
           <a href="${airbnbLink}" target="_blank" class="accommodation-btn">View on Airbnb</a>
-          <a href="https://www.google.com/maps/@27.8675,-15.6340,3a,75y" target="_blank" class="accommodation-btn" style="background: #ea4335; margin-left: 0.5rem;">Street View</a>
+          <a href="https://www.google.com/maps/place/Avenida+Lechugal+61+Mogan+Canarias+35138/@27.8675,-15.6340,3a,75y" target="_blank" class="accommodation-btn" style="background: #ea4335; margin-left: 0.5rem;">Street View</a>
         </div>
         
         <div class="info-box">
@@ -630,13 +630,13 @@
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
               <span><strong>English Channel & Bay of Biscay</strong> - Beautiful coastal views, then open ocean</span>
               <div style="gap: 0.5rem; display: flex;">
-                <a href="https://www.google.com/maps/@50.5,-2,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+                <a href="https://www.google.com/maps/place/English+Channel/@50.5,-2,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
               </div>
             </div>
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
               <span><strong>Spanish Coast</strong> - Iberian Peninsula with varied landscapes</span>
               <div style="gap: 0.5rem; display: flex;">
-                <a href="https://www.google.com/maps/@40.5,-4,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+                <a href="https://www.google.com/maps/place/Portugal/@40.5,-4,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
               </div>
             </div>
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px;">
@@ -645,7 +645,7 @@
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
               <span><strong>Canary Islands Approach</strong> - Volcanic landscape and surrounding islands</span>
               <div style="gap: 0.5rem; display: flex;">
-                <a href="https://www.google.com/maps/@27.9,−15.6,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+                <a href="https://www.google.com/maps/place/Gran+Canaria/@27.9,-15.6,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
               </div>
             </div>
           </div>
@@ -658,7 +658,7 @@
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
               <span><strong>Canary Islands Departure</strong> - City lights of Las Palmas at takeoff</span>
               <div style="gap: 0.5rem; display: flex;">
-                <a href="https://www.google.com/maps/@28.11,-15.59,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+                <a href="https://www.google.com/maps/place/Las+Palmas/@28.11,-15.59,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
               </div>
             </div>
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px;">
@@ -667,13 +667,13 @@
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
               <span><strong>Spanish Coast Lights</strong> - Coastal cities and towns twinkling</span>
               <div style="gap: 0.5rem; display: flex;">
-                <a href="https://www.google.com/maps/@40,-3,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+                <a href="https://www.google.com/maps/place/Spain/@40,-3,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
               </div>
             </div>
             <div style="background: #f9f9f9; padding: 0.75rem; border-radius: 6px; font-size: 13px; display: flex; justify-content: space-between; align-items: center;">
               <span><strong>UK Approach (Early Morning)</strong> - Dawn light breaking, approaching Britain</span>
               <div style="gap: 0.5rem; display: flex;">
-                <a href="https://www.google.com/maps/@53.5,-2,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
+                <a href="https://www.google.com/maps/place/United+Kingdom/@53.5,-2,3a,75y" target="_blank" style="font-size: 11px; color: #ea4335; text-decoration: none; font-weight: 500;">📷 View</a>
               </div>
             </div>
           </div>
