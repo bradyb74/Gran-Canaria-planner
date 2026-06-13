@@ -59,6 +59,14 @@
     .photo-info { background: #f9f9f9; border: 1px solid #eee; border-radius: 6px; padding: 1rem; margin-top: 1.5rem; font-size: 13px; color: #666; }
     #map { width: 100%; height: 500px; border-radius: 8px; margin-bottom: 1rem; }
     .map-info { background: #f9f9f9; border: 1px solid #eee; border-radius: 6px; padding: 1rem; font-size: 13px; color: #666; }
+    .accommodation-card { background: linear-gradient(135deg, #1a9b8e 0%, #138d82 100%); border-radius: 8px; padding: 1.5rem; color: white; margin-bottom: 1.5rem; }
+    .accommodation-card h2 { margin: 0 0 1rem 0; font-size: 22px; }
+    .accommodation-detail { margin-bottom: 1rem; }
+    .accommodation-detail strong { display: block; font-size: 13px; opacity: 0.9; margin-bottom: 0.25rem; }
+    .accommodation-detail p { margin: 0; font-size: 15px; }
+    .accommodation-btn { display: inline-block; background: white; color: #1a9b8e; padding: 0.8rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; font-size: 14px; margin-top: 1rem; }
+    .accommodation-btn:hover { background: #f0f0f0; }
+    .info-box { background: #f0f8f6; border: 1px solid #1a9b8e; border-radius: 6px; padding: 1rem; margin-top: 1rem; font-size: 13px; color: #333; }
     .translator-section { display: flex; gap: 1rem; margin-bottom: 1rem; }
     .translator-half { flex: 1; }
     .translator-half label { font-size: 13px; color: #666; display: block; margin-bottom: 0.5rem; font-weight: 500; }
@@ -138,6 +146,7 @@
 
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('activities')">Activities</button>
+      <button class="tab-btn" onclick="switchTab('accommodation')">Accommodation</button>
       <button class="tab-btn" onclick="switchTab('map')">Map</button>
       <button class="tab-btn" onclick="switchTab('translator')">Translator</button>
       <button class="tab-btn" onclick="switchTab('quizzes')">Quizzes</button>
@@ -147,6 +156,10 @@
 
     <div id="activities-tab">
       <div id="activities-list"></div>
+    </div>
+
+    <div id="accommodation-tab" style="display: none;">
+      <div id="accommodation-content"></div>
     </div>
 
     <div id="map-tab" style="display: none;">
@@ -249,6 +262,7 @@
       
       loadActivities();
       renderActivities();
+      renderAccommodation();
       renderMap();
       renderTranslator();
       renderQuizzes();
@@ -440,7 +454,42 @@
       `;
     }
 
-    function renderMap() {
+    function renderAccommodation() {
+      const container = document.getElementById('accommodation-content');
+      const airbnbLink = 'https://www.airbnb.co.uk/trips/v1/reservation-details/ro/RESERVATION2_CHECKIN/HMN3NBEDSM';
+      
+      container.innerHTML = `
+        <div class="accommodation-card">
+          <h2>🏠 Your Accommodation</h2>
+          <div class="accommodation-detail">
+            <strong>Address</strong>
+            <p>Avenida Lechugal, 61<br>Mogán, Canarias 35138<br>Spain</p>
+          </div>
+          <a href="${airbnbLink}" target="_blank" class="accommodation-btn">View on Airbnb</a>
+        </div>
+        
+        <div class="info-box">
+          <strong>Check-in Tips:</strong>
+          <p style="margin: 0.5rem 0 0 0;">
+            • Mogán is a charming fishing village 1 hour from the airport<br>
+            • Parking is available but can be tight in summer<br>
+            • The village has excellent restaurants and a beautiful harbor<br>
+            • Local supermarket (Mercado del Puerto) nearby for supplies<br>
+            • Beach access within 5 minutes walk
+          </p>
+        </div>
+
+        <div class="info-box" style="margin-top: 1rem;">
+          <strong>Getting Around:</strong>
+          <p style="margin: 0.5rem 0 0 0;">
+            • Car rental recommended for exploring the island<br>
+            • Local buses connect to other towns (ask at accommodation)<br>
+            • Taxis available but can be expensive<br>
+            • Most activities within 30-60 minutes drive
+          </p>
+        </div>
+      `;
+    }
       const container = document.getElementById('map-container');
       container.innerHTML = `
         <div id="map"></div>
@@ -453,69 +502,74 @@
     }
 
     function initMap() {
-      const accommodationCoords = [27.8675, -15.6340]; // Avenida Lechugal, Mogán
+      const accommodationCoords = [27.8675, -15.6340];
       const mapContainer = document.getElementById('map');
       
       if (mapContainer.childNodes.length > 0) {
         mapContainer.innerHTML = '';
       }
       
-      const map = L.map('map', { preferCanvas: true }).setView(accommodationCoords, 12);
+      const map = L.map('map', { 
+        zoomControl: true,
+        touchZoom: true,
+        scrollWheelZoom: true,
+        dragging: true
+      }).setView(accommodationCoords, 12);
       
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
+        attribution: '© OpenStreetMap',
+        maxZoom: 19,
+        updateWhenIdle: true
       }).addTo(map);
 
-      // Add accommodation marker (home)
-      L.marker(accommodationCoords, {
-        icon: L.icon({
-          iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTAgMjBWMTRoNHY2aDVWMTBoM0wxMiAzIDIgMTBoM3Y0aDV6IiBmaWxsPSIjZDRhNTc0Ii8+PC9zdmc+',
-          iconSize: [32, 32],
-          iconAnchor: [16, 32],
-          popupAnchor: [0, -32]
-        })
-      }).addTo(map).bindPopup('<strong>🏠 Your Accommodation</strong><br>Avenida Lechugal, 61<br>Mogán, Canarias 35138');
+      // Home marker (accent color)
+      L.circleMarker(accommodationCoords, {
+        radius: 10,
+        fillColor: '#d4a574',
+        color: '#854f0b',
+        weight: 3,
+        opacity: 1,
+        fillOpacity: 0.9
+      }).addTo(map).bindPopup('<strong>🏠 Your Accommodation</strong><br>Avenida Lechugal, 61');
 
-      // Add activities as markers
+      // Add activities (simplified)
       const allActivities = loadActivities();
       const activityCoords = {
-        1: [27.8677, -15.6335], // Mogán
-        2: [27.7647, -15.5913], // Meloneras
-        3: [28.1067, -15.5853], // Vegueta
-        4: [27.9633, -15.6025], // Roque Nublo
-        5: [27.8677, -15.6335], // Stargazing (Mogán)
-        7: [27.7369, -15.5895]  // Maspalomas Lighthouse
+        1: [27.8677, -15.6335],
+        2: [27.7647, -15.5913],
+        3: [28.1067, -15.5853],
+        4: [27.9633, -15.6025],
+        5: [27.8677, -15.6335],
+        7: [27.7369, -15.5895]
       };
 
       allActivities.forEach(activity => {
         if (activityCoords[activity.id]) {
           const coords = activityCoords[activity.id];
           L.circleMarker(coords, {
-            radius: 8,
+            radius: 6,
             fillColor: '#d4a574',
             color: '#854f0b',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.8
-          }).addTo(map).bindPopup(`<strong>${activity.name}</strong><br>${activity.description}<br><a href="https://www.google.com/maps/search/${encodeURIComponent(activity.name + ' Gran Canaria')}" target="_blank">View on Maps →</a>`);
+            weight: 1.5,
+            opacity: 0.8,
+            fillOpacity: 0.7
+          }).addTo(map).bindPopup(`<strong>${activity.name}</strong><br><small>${activity.description}</small>`);
         }
       });
 
-      // Add local businesses
-      localBusinesses.forEach(business => {
-        const color = business.type === 'Restaurant' ? '#1a9b8e' : '#138d82';
+      // Add businesses (simplified)
+      localBusinesses.slice(0, 4).forEach(business => {
         L.circleMarker(business.coords, {
-          radius: 6,
-          fillColor: color,
+          radius: 5,
+          fillColor: '#1a9b8e',
           color: '#0F6E56',
-          weight: 1.5,
-          opacity: 1,
-          fillOpacity: 0.7
-        }).addTo(map).bindPopup(`<strong>${business.name}</strong><br><em>${business.type}</em><br>${business.info}<br><a href="https://www.google.com/maps/search/${encodeURIComponent(business.name + ' Mogán Gran Canaria')}" target="_blank">View on Maps →</a>`);
+          weight: 1,
+          opacity: 0.7,
+          fillOpacity: 0.6
+        }).addTo(map).bindPopup(`<strong>${business.name}</strong><br><small>${business.type}</small>`);
       });
 
-      map.invalidateSize();
+      setTimeout(() => map.invalidateSize(), 100);
     }
 
     function renderTranslator() {
