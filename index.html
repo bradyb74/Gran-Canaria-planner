@@ -67,6 +67,27 @@
     .accommodation-btn { display: inline-block; background: white; color: #1a9b8e; padding: 0.8rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; cursor: pointer; border: none; font-size: 14px; margin-top: 1rem; }
     .accommodation-btn:hover { background: #f0f0f0; }
     .info-box { background: #f0f8f6; border: 1px solid #1a9b8e; border-radius: 6px; padding: 1rem; margin-top: 1rem; font-size: 13px; color: #333; }
+    .flight-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .flight-header { background: #1a9b8e; color: white; padding: 1rem; margin: -1.5rem -1.5rem 1rem -1.5rem; border-radius: 8px 8px 0 0; font-weight: 600; }
+    .flight-detail { display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee; }
+    .flight-detail:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .flight-label { font-size: 12px; color: #999; font-weight: 500; }
+    .flight-value { font-size: 14px; color: #333; font-weight: 500; }
+    .car-card { background: linear-gradient(135deg, #d4a574 0%, #c49460 100%); border-radius: 8px; padding: 1.5rem; color: white; margin-bottom: 1.5rem; }
+    .car-card h3 { margin: 0 0 1rem 0; font-size: 20px; }
+    .car-detail { margin-bottom: 1rem; }
+    .car-detail strong { display: block; font-size: 12px; opacity: 0.9; margin-bottom: 0.25rem; }
+    .car-detail p { margin: 0; font-size: 15px; }
+    .confirmation-code { background: rgba(255,255,255,0.2); padding: 0.75rem; border-radius: 4px; margin-top: 1rem; font-family: monospace; font-size: 14px; font-weight: 600; }
+    .timeline { display: flex; gap: 1rem; margin: 1.5rem 0; }
+    .timeline-item { flex: 1; background: #f9f9f9; padding: 1rem; border-radius: 6px; text-align: center; }
+    .timeline-label { font-size: 12px; color: #999; margin-bottom: 0.5rem; }
+    .timeline-value { font-size: 14px; font-weight: 600; color: #333; }
+    .timeline-arrow { display: flex; align-items: center; color: #ddd; font-size: 20px; }
+    @media (max-width: 768px) {
+      .timeline { flex-wrap: wrap; }
+      .timeline-arrow { display: none; }
+    }
     .translator-section { display: flex; gap: 1rem; margin-bottom: 1rem; }
     .translator-half { flex: 1; }
     .translator-half label { font-size: 13px; color: #666; display: block; margin-bottom: 0.5rem; font-weight: 500; }
@@ -147,6 +168,8 @@
     <div class="tab-bar">
       <button class="tab-btn active" onclick="switchTab('activities')">Activities</button>
       <button class="tab-btn" onclick="switchTab('accommodation')">Accommodation</button>
+      <button class="tab-btn" onclick="switchTab('travel')">Travel</button>
+      <button class="tab-btn" onclick="switchTab('car')">Car Rental</button>
       <button class="tab-btn" onclick="switchTab('map')">Map</button>
       <button class="tab-btn" onclick="switchTab('translator')">Translator</button>
       <button class="tab-btn" onclick="switchTab('quizzes')">Quizzes</button>
@@ -160,6 +183,14 @@
 
     <div id="accommodation-tab" style="display: none;">
       <div id="accommodation-content"></div>
+    </div>
+
+    <div id="travel-tab" style="display: none;">
+      <div id="travel-content"></div>
+    </div>
+
+    <div id="car-tab" style="display: none;">
+      <div id="car-content"></div>
     </div>
 
     <div id="map-tab" style="display: none;">
@@ -263,6 +294,8 @@
       loadActivities();
       renderActivities();
       renderAccommodation();
+      renderTravel();
+      renderCarRental();
       renderMap();
       renderTranslator();
       renderQuizzes();
@@ -498,6 +531,154 @@
             • Local buses connect to other towns (ask at accommodation)<br>
             • Taxis available but can be expensive<br>
             • Most activities within 30-60 minutes drive
+          </p>
+        </div>
+      `;
+    }
+
+    function renderTravel() {
+      const container = document.getElementById('travel-content');
+      
+      container.innerHTML = `
+        <div class="flight-card">
+          <div class="flight-header">✈️ Outbound Flight</div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Flight Number</div>
+              <div class="flight-value">LS225</div>
+            </div>
+            <div>
+              <div class="flight-label">Date</div>
+              <div class="flight-value">Sun, 28 Jun 2026</div>
+            </div>
+          </div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Departure</div>
+              <div class="flight-value">15:15 from Leeds Bradford (LBA)</div>
+            </div>
+          </div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Arrival</div>
+              <div class="flight-value">20:00 at Gran Canaria (LPA)</div>
+            </div>
+          </div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Flight Duration</div>
+              <div class="flight-value">4 hrs 45 mins</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flight-card">
+          <div class="flight-header" style="background: #138d82;">✈️ Return Flight</div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Flight Number</div>
+              <div class="flight-value">LS226</div>
+            </div>
+            <div>
+              <div class="flight-label">Date</div>
+              <div class="flight-value">Sun, 5 Jul 2026</div>
+            </div>
+          </div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Departure</div>
+              <div class="flight-value">21:00 from Gran Canaria (LPA)</div>
+            </div>
+          </div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Arrival</div>
+              <div class="flight-value">01:35 (next day) at Leeds Bradford (LBA)</div>
+            </div>
+          </div>
+          <div class="flight-detail">
+            <div>
+              <div class="flight-label">Flight Duration</div>
+              <div class="flight-value">4 hrs 35 mins</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>✈️ Travel Tips:</strong>
+          <p style="margin: 0.5rem 0 0 0;">
+            • Arrive at airport 3 hours before international flights<br>
+            • Check in online 24 hours before departure<br>
+            • Bring valid passport (must be valid 6+ months after travel)<br>
+            • Pack sunscreen - bring in checked luggage (over 100ml)<br>
+            • Time difference: Gran Canaria is 1 hour ahead of UK
+          </p>
+        </div>
+      `;
+    }
+
+    function renderCarRental() {
+      const container = document.getElementById('car-content');
+      
+      container.innerHTML = `
+        <div class="car-card">
+          <h3>🚗 Car Rental Booking</h3>
+          <div class="car-detail">
+            <strong>Booking Number</strong>
+            <p>727391076</p>
+          </div>
+          <div class="car-detail">
+            <strong>Vehicle</strong>
+            <p>Skoda Kodiaq or similar<br><small>7-seater SUV</small></p>
+          </div>
+          <div class="car-detail">
+            <strong>Duration</strong>
+            <p>7 days (Sun 28 Jun - Sun 5 Jul)</p>
+          </div>
+          <div class="car-detail">
+            <strong>Pickup</strong>
+            <p>Sun 28 Jun at 20:30<br>Gran Canaria Airport (Terminal)</p>
+          </div>
+          <div class="car-detail">
+            <strong>Dropoff</strong>
+            <p>Sun 5 Jul at 19:30<br>Gran Canaria Airport (Terminal)</p>
+          </div>
+          <div class="confirmation-code">📋 Ref: 727391076</div>
+        </div>
+
+        <div class="info-box">
+          <strong>🚗 Pickup Information:</strong>
+          <p style="margin: 0.5rem 0 0 0;">
+            • You'll arrive at 20:00, pickup is at 20:30 - plenty of time<br>
+            • Look for the rental desk in the terminal<br>
+            • Bring your driving license and passport<br>
+            • You may need an International Driving Permit (check before you go)<br>
+            • Inspect the car for damage before leaving the lot<br>
+            • Check fuel level and spare tire
+          </p>
+        </div>
+
+        <div class="info-box" style="margin-top: 1rem;">
+          <strong>🏝️ Driving in Gran Canaria:</strong>
+          <p style="margin: 0.5rem 0 0 0;">
+            • Drive on the RIGHT side of the road<br>
+            • Speed limits: 120 km/h on motorways, 90 km/h on main roads, 50 km/h in towns<br>
+            • Seatbelts are mandatory<br>
+            • Headlights on outside built-up areas<br>
+            • Parking can be tight in villages - arrive early<br>
+            • Many roads are narrow and winding - drive carefully<br>
+            • Tolls may apply on some motorways
+          </p>
+        </div>
+
+        <div class="info-box" style="margin-top: 1rem;">
+          <strong>⛽ Fuel & Dropoff:</strong>
+          <p style="margin: 0.5rem 0 0 0;">
+            • Return the car with a full tank to avoid charges<br>
+            • Plan to fill up on the way to the airport (5 Jul afternoon)<br>
+            • Arrive at airport by 19:00 for 21:00 flight<br>
+            • Dropoff is at 19:30 - tight but doable with 1.5 hours to spare<br>
+            • Keep your receipt and all rental documents
           </p>
         </div>
       `;
